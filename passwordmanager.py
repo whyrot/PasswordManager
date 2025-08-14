@@ -26,6 +26,7 @@ def addpass():
     print("Password saved.")
 
 def clearpass():
+    check = input('are you SURE you want to clear all passwords???\ny/n: ')
     with open(PASS_FILE, "w") as file:
         pass
     print('passwords successfully cleared!\n')
@@ -89,15 +90,14 @@ while True:
     elif menu == "4":
         confirm = input('are you SURE you want to do this? it will delete your password and encryption key and you will NO LONGER be able to access your passwords.\ni reccomend clearing passwords before continuing.\ncontinue? y/n: ')
         if confirm == 'y':
-            os.remove(KEY_FILE)
             os.remove(MASTER_FILE)
+            os.remove(KEY_FILE)
+            
             print('cleared')
         if confirm == 'n':
             exit()
-
-
-       
     elif menu == "5":
         exit()
     else:
         print('Enter a valid input!')
+    

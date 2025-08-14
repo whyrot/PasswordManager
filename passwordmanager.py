@@ -56,6 +56,7 @@ if not os.path.exists(MASTER_FILE) or os.path.getsize(MASTER_FILE) == 0:
     with open(MASTER_FILE, 'w') as file:
         file.write(hashedpass)
     print('Master password set. Please restart the program.')
+    clearpass()
     exit()
 
 enter = getpass.getpass(prompt='Enter master password: ', stream=None)

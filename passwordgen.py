@@ -1,23 +1,90 @@
-import random
-import string
+import os
+import hashlib
+import getpass
+from cryptography.fernet import Fernet
 
+KEY_FILE = 'key.key'
+PASS_FILE = 'passwords.txt'
+MASTER_FILE = 'master.txt'
 
-def passgen(length):
-    characters = string.digits + string.punctuation + string.ascii_letters
-    return ''.join(random.choices(characters, k=length))
+if not os.path.exists(KEY_FILE):
+    key = Fernet.generate_key()
+    with open(KEY_FILE, "wb") as f:
+        f.write(key)
 
-ask = input("would you like to generate a secure password? y/n: ")
-if ask == "y":
-    length = int(input("Enter the length of the random string: "))
-    password = passgen(length)
+def load_key():
+    with open(KEY_FILE, "rb") as file:
+        return file.read()
 
-    username = input("enter the username/email here: ")
-    
-    final = (f"{username}:{password}\n")
-    print(f"{username}:{password}")
-    with open("passwords.txt", "a") as file:
-        file.write(final)
+def addpass():
+    pw = getpass.getpass(prompt='Password: ', stream=None)
+    key = load_key()
+    cipher = Fernet(key)
+    encrypted_pw = cipher.encrypt(pw.encode())
+    with open(PASS_FILE, "a") as file:
+        file.write(encrypted_pw.decode() + "\n")
+    print("Password saved.")
 
-    print("The password and username combo has been saved to passwords.txt")
-else:
+def clearpass():
+    with open(PASS_FILE, "w") as file:
+        pass
+    print('passwords successfully cleared!\n')
+
+def openpass():
+    key = load_key()
+    cipher = Fernet(key)
+    if not os.path.exists(PASS_FILE) or os.path.getsize(PASS_FILE) == 0:
+        print("No passwords stored.")
+        return
+    with open(PASS_FILE, "r") as file:
+        for line in file:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                decrypted_pw = cipher.decrypt(line.encode()).decode()
+                print(decrypted_pw)
+            except Exception as e:
+                print(f"Error decrypting entry: {e}")
+
+if not os.path.exists(MASTER_FILE) or os.path.getsize(MASTER_FILE) == 0:
+    print('No master password found. Please set a new master password.')
+    enter = getpass.getpass(prompt='Set master password: ', stream=None)
+    hashs = hashlib.sha256()
+    hashs.update(enter.encode())
+    hashedpass = hashs.hexdigest()
+    with open(MASTER_FILE, 'w') as file:
+        file.write(hashedpass)
+    print('Master password set. Please restart the program.')
     exit()
+
+enter = getpass.getpass(prompt='Enter master password: ', stream=None)
+hashs = hashlib.sha256()
+hashs.update(enter.encode())
+hashedpass = hashs.hexdigest()
+
+with open(MASTER_FILE, 'r') as file:
+    masterkey = file.read()
+
+if hashedpass != masterkey:
+    print('Wrong password')
+    exit()
+
+while True:
+    menu = input("""
+
+1. add a password
+2. clear password list
+3. open passwords
+4. exit
+: """)
+    if menu == "1":
+        addpass()
+    elif menu == "2":
+        clearpass()
+    elif menu == "3":
+        openpass()
+    elif menu == "4":
+        exit()
+    else:
+        print('Enter a valid input!')

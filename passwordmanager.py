@@ -77,7 +77,8 @@ while True:
 1. add a password
 2. clear password list
 3. open passwords
-4. exit
+4. delete stored master password and encryption key
+5. exit
 : """)
     if menu == "1":
         addpass()
@@ -86,6 +87,17 @@ while True:
     elif menu == "3":
         openpass()
     elif menu == "4":
+        confirm = input('are you SURE you want to do this? it will delete your password and encryption key and you will NO LONGER be able to access your passwords.\ni reccomend clearing passwords before continuing.\ncontinue? y/n: ')
+        if confirm == 'y':
+            os.remove(KEY_FILE)
+            os.remove(MASTER_FILE)
+            print('cleared')
+        if confirm == 'n':
+            exit()
+
+
+       
+    elif menu == "5":
         exit()
     else:
         print('Enter a valid input!')

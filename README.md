@@ -1,3 +1,4 @@
-Password Generator that stores them in a txt file!
-i tried to make it as simple as possible
-not secure to store passwords in txt files pls dont use this!!
+#PasswordManager
+**simple password manager**
+realtively simple. it has a master password that you choose to open the software and you can view passwords from there.
+also encrpts all of your passwords and requires the password you set to decrpypt them.

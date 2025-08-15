@@ -3,6 +3,9 @@ import hashlib
 import getpass
 from cryptography.fernet import Fernet
 import base64
+import string
+import random
+
 
 KEY_FILE = 'key.key'
 PASS_FILE = 'passwords.txt'
@@ -43,6 +46,14 @@ with open(KEY_FILE, 'rb') as file:
 
 fernet = Fernet(key)
 
+def passwordgen():
+    length = int(input('enter length of the password you would like to generate: '))
+    disallowed = set(["'", '"', '\\', '`', '<', '>', '/', '-', '_'])
+    punctuation = string.punctuation
+    allowed_punctuation = ''.join(ch for ch in punctuation if ch not in disallowed)
+    characters = string.ascii_letters + string.digits  + allowed_punctuation
+    securepass = ''.join(random.choice(characters) for _ in range(length))
+    print(f'your securely generated password is: {securepass}')
 def addpass():
     email = input("Enter email/username: ")
     platform = input("Enter platform/website: ")
@@ -77,12 +88,13 @@ def openpass():
 
 while True:
     menu = input("""
-
 1. add a password
 2. clear password list
 3. open passwords
 4. delete stored master password and encryption key
-5. exit
+5. generate a secure password
+6. exit
+                 
  """)
     if menu == "1":
         addpass()
@@ -99,6 +111,8 @@ while True:
         if confirm == 'n':
             exit()
     elif menu == "5":
+        passwordgen()
+    elif menu == "6":
         exit()
     else:
         print('Enter a valid input!')

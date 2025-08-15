@@ -1,9 +1,3 @@
 # PasswordManager
 
-
-**simple password manager**
-
-
-
-realtively simple. it has a master password that you choose to open the software and you can view passwords from there.
-also encrpts all of your passwords and requires the password you set to decrpypt them.
+My philosophy with creating this password manager is too make a tool so simple that it just works no fluff no data breaches just real  layered encryption. I recommend **storing this on a usb or another removeable external drive** and only plugging it in when you actively need your passwords. This tool is and always will be free and open source. I may add more security features and maybe a GUI in the future but i will likely keep updates minimal. Enjoy! :D
